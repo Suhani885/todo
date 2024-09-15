@@ -1,0 +1,14 @@
+<div class="form-container">
+    <h2>Register</h2>
+    <form ng-submit="regCtrl.register()">
+        <input type="text" pattern="[a-zA-Z]+" maxlength="20" ng-model="regCtrl.fname" placeholder="Firstname" required>
+        <input type="text" pattern="[a-zA-Z]+" maxlength="20" ng-model="regCtrl.lname" placeholder="Lastname" required>
+        <input type="text" pattern="[a-zA-Z]+" maxlength="20" ng-model="regCtrl.username" placeholder="Username" required>
+        <input type="email" ng-model="regCtrl.email" placeholder="Email" required>
+        <input type="password" ng-model="regCtrl.pass1" placeholder="Password" required>
+        <input type="password" ng-model="regCtrl.pass2" placeholder="Confirm Password" required>
+        <button type="submit">Register</button>
+    </form>
+    <p class="error-message" ng-if="regCtrl.errorMessage">{{regCtrl.errorMessage}}</p>
+    <p>Already have an account? <a ui-sref="login">Login</a></p>
+</div>

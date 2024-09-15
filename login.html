@@ -1,0 +1,10 @@
+<div class="form-container">
+    <h2>Login</h2>
+    <form ng-submit="loginCtrl.login()">
+        <input type="text" ng-model="loginCtrl.username" placeholder="Username" required>
+        <input type="password" ng-model="loginCtrl.password" placeholder="Password" required>
+        <button type="submit">Login</button>
+    </form>
+    <p class="error-message" ng-if="loginCtrl.errorMessage">{{loginCtrl.errorMessage}}</p>
+    <p>Don't have an account? <a ui-sref="register">Register</a></p>
+</div>

@@ -1,0 +1,13 @@
+<div class="todo-container">
+    <h2>Todo List</h2>
+    <form ng-submit="todoCtrl.addTodo()">
+        <input type="text" ng-model="todoCtrl.newTodo" placeholder="Add new todo">
+        <button type="submit">Add</button>
+    </form>
+    <ul>
+        <li ng-repeat="todo in todoCtrl.todos">
+            <input type="checkbox" ng-model="todo.done" id="todo-{{$index}}">
+            <label for="todo-{{$index}}" ng-class="{'done': todo.done}">{{todo.text}}</label>
+        </li>
+    </ul>
+</div>
