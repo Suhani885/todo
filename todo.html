@@ -1,13 +1,19 @@
-<div class="todo-container">
-    <h2>Todo List</h2>
-    <form ng-submit="todoCtrl.addTodo()">
-        <input type="text" ng-model="todoCtrl.newTodo" placeholder="Add new todo">
-        <button type="submit">Add</button>
-    </form>
-    <ul>
-        <li ng-repeat="todo in todoCtrl.todos">
-            <input type="checkbox" ng-model="todo.done" id="todo-{{$index}}">
-            <label for="todo-{{$index}}" ng-class="{'done': todo.done}">{{todo.text}}</label>
-        </li>
-    </ul>
+<div class="page-container" ng-controller="TodoController as todoCtrl">
+    <button class="logout-button" ng-click="todoCtrl.logout()">Logout</button>
+    <div class="todo-container">
+        <h2 class="greeting">Hello, {{todoCtrl.username}}!</h2>
+        <h3>Todo List</h3>
+        <form ng-submit="todoCtrl.addTodo()" class="add-todo-form">
+            <input type="text" ng-model="todoCtrl.newTodo" placeholder="What needs to be done?">
+            <button type="submit" class="add-button">Add</button>
+        </form>
+        <ul>
+            <li ng-repeat="todo in todoCtrl.todos" class="todo-item">
+                <input type="checkbox" ng-model="todo.done" id="todo-{{$index}}">
+                <label for="todo-{{$index}}" ng-class="{'done': todo.done}">{{todo.text}}</label>
+                <button class="update-button" ng-click="todoCtrl.updateTodo($index)">Update</button>
+                <button class="delete-button" ng-click="todoCtrl.deleteTodo($index)">Delete</button>
+            </li>
+        </ul>
+    </div>
 </div>
