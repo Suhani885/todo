@@ -1,18 +1,20 @@
 <div class="page-container" ng-controller="TodoController as todoCtrl">
-    <button class="logout-button" ng-click="todoCtrl.logout()">Logout</button>
     <div class="todo-container">
-        <h2 class="greeting">Hello, {{todoCtrl.username}}!</h2>
-        <h3>Todo List</h3>
+        <button class="logout-button" ng-click="todoCtrl.logout()"><svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="black" d="m17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4z"/></svg></button>
+        <h4 class="greeting">Hello, {{todoCtrl.username}}!</h4>
+        <h3>Your To-do List</h3>
         <form ng-submit="todoCtrl.addTodo()" class="add-todo-form">
-            <input type="text" ng-model="todoCtrl.newTodo" placeholder="What needs to be done?">
-            <button type="submit" class="add-button">Add</button>
+            <div class="input-group">
+                <input type="text" ng-model="todoCtrl.newTodo" placeholder="What needs to be done?">
+                <button class="button" type="submit" class="add-button">Add</button>
+            </div>
         </form>
         <ul>
             <li ng-repeat="todo in todoCtrl.todos" class="todo-item">
-                <input type="checkbox" ng-model="todo.done" id="todo-{{$index}}">
-                <label for="todo-{{$index}}" ng-class="{'done': todo.done}">{{todo.text}}</label>
-                <button class="update-button" ng-click="todoCtrl.updateTodo($index)">Update</button>
-                <button class="delete-button" ng-click="todoCtrl.deleteTodo($index)">Delete</button>
+                <input type="checkbox" ng-model="todo.done" id="{{todo.ID}}" ng-change="todoCtrl.updateTodo(todo)">
+                <label for="{{todo.ID}}" ng-class="{'done': todo.done}">{{todo.todo}}</label>
+                <button class="edit-button" ng-click="todoCtrl.editTodo(todo.ID)"><svg xmlns="http://www.w3.org/2000/svg" width="1.5em" height="1.5em" viewBox="0 0 24 24"><path fill="black" d="M19 4h-3.5l-1-1h-5l-1 1H5v2h14M6 19a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V7H6z"/></svg></button>
+                <button class="delete-button" ng-click="todoCtrl.deleteTodo(todo.ID)"><svg xmlns="http://www.w3.org/2000/svg" width="1.5em" height="1.5em" viewBox="0 0 24 24"><path fill="black" d="M19 4h-3.5l-1-1h-5l-1 1H5v2h14M6 19a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V7H6z"/></svg></button>
             </li>
         </ul>
     </div>

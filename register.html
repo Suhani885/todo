@@ -7,7 +7,7 @@
         <input type="email" ng-model="RegCtrl.email" placeholder="Email" required>
         <input pattern="(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*\W).{8,16}" type="password" ng-model="RegCtrl.pass1" placeholder="Password" required>
         <input pattern="(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*\W).{8,16}" type="password" ng-model="RegCtrl.pass2" placeholder="Confirm Password" required>
-        <button type="submit">Register</button>
+        <button class="button" type="submit">Register</button>
     </form>
     <p class="error-message" ng-if="RegCtrl.errorMessage">{{RegCtrl.errorMessage}}</p>
     <p>Already have an account? <a ui-sref="login">Login</a></p>

@@ -7,93 +7,77 @@ body {
     background-color: #121212;
     color: #ffffff;
     margin: 0;
-    padding: 20px;
+    padding: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     min-height: 100vh;
 }
 
-.page-container {
-    position: relative;
-    max-width: 400px;
-    margin: 0 auto;
-    padding-top: 40px;
+h3 {
+    font-size: 20px;  
+    color: #bb86fc;
+    text-align: center;
+    margin-bottom: 30px;  
 }
 
 .todo-container {
+    min-width: 400px; 
+    max-width: 500px;  
     background-color: #1e1e1e;
-    padding: 20px;
     border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    width: 100%;
+    position: relative;
+    left: 50px;
+    padding: 40px;  
 }
 
-.logout-button {
-    position: absolute;
-    top: 0;
-    right: 0;
-    background-color: #cf6679;
-    color: #ffffff;
-    border: none;
-    padding: 5px 10px;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 12px;
-    transition: background-color 0.3s ease;
-    width: auto;
+.form-container {
+    background-color: #1e1e1e;
+    padding: 30px;
+    border-radius: 8px;
+    width: 75%;
+    max-width: 400px;
+    position: relative;
+    left: 40px;
 }
 
-.logout-button:hover {
-    background-color: #a83e52;
+p {
+    font-size: 13px;
 }
 
-.greeting {
-    color: #03dac6;
-    margin: 0 0 20px 0;
-    font-size: 24px;
-    text-align: center;
-}
-
-h3 {
+h2 {
     color: #bb86fc;
     margin-top: 0;
-    margin-bottom: 20px;
     text-align: center;
-    font-size: 20px;
-}
-
-.add-todo-form {
-    display: flex;
-    margin-bottom: 20px;
+    font-size: 28px; 
+    margin-bottom: 30px; 
 }
 
 input {
-    flex-grow: 1;
-    padding: 10px;
+    width: 100%;
+    margin-bottom: 12px;
     border: 1px solid #bb86fc;
-    border-radius: 4px 0 0 4px;
-    font-size: 14px;
+    border-radius: 4px;
     background-color: #121212;
     color: #ffffff;
+    font-size: 10px;  
+    padding: 8px;
 }
 
-.add-button {
-    padding: 10px 15px;
+.button {
+    width: 100%;
+    padding: 10px;
     background-color: #bb86fc;
     color: #121212;
     border: none;
-    border-radius: 0 4px 4px 0;
+    border-radius: 4px;
     cursor: pointer;
-    font-size: 14px;
+    font-size: 10px;
     font-weight: bold;
-    transition: background-color 0.3s ease;
 }
 
-.add-button:hover {
+.button:hover {
     background-color: #03dac6;
-}
-
-ul {
-    list-style-type: none;
-    padding: 0;
 }
 
 .todo-item {
@@ -102,68 +86,124 @@ ul {
     margin-bottom: 15px;
 }
 
-.todo-item input[type="checkbox"] {
-    margin-right: 10px;
+.todo-item label {
+    flex-grow: 2;
+    width: 100%;
+    font-size: 10px; 
 }
 
-.todo-item label {
-    flex-grow: 1;
-    margin-right: 10px;
+.todo-item button {
+    margin-left: 10px;
+    padding: 3px;
+    font-size: 8px;
+    width: 10%;
+    border: none;
+    cursor: pointer;
+    border-radius: 100px;
+    background-color:  #d84848;
+}
+
+.delete-button:hover {
+    opacity: 0.6;
+}
+
+.logout-button:hover {
+    opacity: 0.6;
+}
+
+.greeting {
+    color: #03dac6;
+    margin-bottom: 20px;
+    text-align: center;
+    margin-top: 0;
+    font-size: 28px; 
+    margin-bottom: 20px; 
+}
+
+ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+li {
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
 }
 
 .done {
     text-decoration: line-through;
-    opacity: 0.7;
 }
 
-.update-button, .delete-button {
-    padding: 5px 10px;
-    font-size: 12px;
-    margin-left: 5px;
+a {
+    color: #03dac6;
+    text-decoration: none;
+}
+
+a:hover {
+    opacity: 0.8;
+}
+
+.page-container {
+    position: relative;
+    padding-top: 0px;
+    padding-right:100px ; 
+}
+
+input[type="checkbox"] {
+    position: relative;
+    right: 70px;
+}
+
+.logout-button {
+    background-color: #bb86fc;
     width: auto;
+    left: 330px;
+    bottom: 35px;
+    font-size: 10px;
+    padding: 4px;
+    border: none;
+    border-radius: 4px;
+    position: relative;
+    cursor: pointer;
 }
 
-.update-button {
-    background-color: #03dac6;
-}
-
-.delete-button {
-    background-color: #cf6679;
+.error-message {
+    color: #cf6679;
+    margin-top: 10px;
+    text-align: center;
 }
 
 @media (max-width: 480px) {
+
+    .form-container, .todo-container {
+        padding: 20px;
+    }
+
+    input, button {
+        font-size: 14px;
+    }
     body {
-        padding: 10px;
+        padding: 20px;
     }
     
-    .page-container {
-        padding-top: 30px;
-    }
-    
-    .todo-container {
-        padding: 15px;
-    }
-    
-    .greeting {
-        font-size: 20px;
-    }
-    
-    h3 {
+    h2 {
         font-size: 18px;
     }
     
-    input, .add-button {
-        font-size: 14px;
-    }
-    
-    .logout-button {
-        font-size: 10px;
-        padding: 4px 8px;
+    h3 {
+        font-size: 20px;
     }
 }
 
 @media (min-width: 481px) and (max-width: 768px) {
-    .page-container {
+    .form-container, .todo-container {
         max-width: 80%;
+    }
+}
+
+@media (min-width: 769px) {
+    .form-container, .todo-container {
+        max-width: 400px;
     }
 }

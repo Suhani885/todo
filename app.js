@@ -75,12 +75,12 @@ app.controller('LoginController', ['$http','$state', function ($http,$state) {
                 }
             };
             $http(req).then(function(response) {
-                console.log(response.data);
-                loginCtrl.successMessage = "Login successful!";
-                sessionStorage.setItem('username', response.data.username);
+                console.log(response);
+                window.alert("Login successful");
+                sessionStorage.setItem('username', loginCtrl.username);
                 $state.go('todo');
             }, function(error) {
-                loginCtrl.errorMessage = "Error";
+                window.alert("Error");
                 console.log("error", error);
             });
         } else {
@@ -90,76 +90,107 @@ app.controller('LoginController', ['$http','$state', function ($http,$state) {
 }]);
 
 app.controller('TodoController', ['$http', '$state', function($http, $state) {
-    this.logout = function() {
-            var req = {
-                method: 'POST',
-                url: 'http://10.21.97.17:8000/todo/todo/',
-                headers: {
-                    'Content-Type': "application/json"
-                },
-                data: {
-                    "Todo": "logout",
-                    "Status":"logout"
-                }
-            };
-            $http(req).then(function(response) {
-                console.log(response);
-                sessionStorage.removeItem('username');
-                $state.go('login');
-            }, function(error) {
-                console.log("error", error);
-            });
+    var todoCtrl = this;
+    todoCtrl.todos = [];
+    todoCtrl.newTodo = '';
+    todoCtrl.username = sessionStorage.getItem('username');
+    var baseUrl = 'http://10.21.97.17:8000';
+
+    todoCtrl.logout = function() {
+        var req = {
+            method: 'POST',
+            url: `${baseUrl}/todo/todo/`,
+            headers: {
+                'Content-Type': "application/json"
+            },
+            data: {
+                "Todo": "logout",
+                "Status": "logout"
+            }
+        };
+        if (confirm("Are you sure you want to logout?")) {
+        $http(req).then(function(response) {
+            console.log(response);
+            sessionStorage.removeItem('username');
+            $state.go('login');
+        }, function(error) {
+            console.log("error", error);
+        });
+    }};
+
+    todoCtrl.fetchTodos = function() {
+        var req = {
+            method: 'GET',
+            url: `${baseUrl}/todo/todo/`,
+            params: { 
+                "username": todoCtrl.username
+            }       
+        };
+        $http(req).then(function(response) {
+            console.log(response);
+            todoCtrl.todos = response.data.todos;
+            console.log(response.data.todos);
+        }, function(error) {
+            console.log("Error", error);
+        });
+    };
+    todoCtrl.fetchTodos();
+
+    todoCtrl.addTodo = function() {
+        var req = {
+            method: 'POST',
+            url: `${baseUrl}/todo/todo/`,
+            headers: {
+                'Content-Type': "application/json"
+            },
+            data: {
+                "Todo": todoCtrl.newTodo
+            }
+        };
+        $http(req).then(function(response) {
+            console.log(response);
+            todoCtrl.fetchTodos();
+            todoCtrl.newTodo = '';
+        }, function(error) {
+            console.log(error);
+        });
+    };
+
+    todoCtrl.updateTodo = function(todo) {
+        var req = {
+            method: 'PUT',
+            url: `${baseUrl}/todo/todo/`,
+            headers: {
+                'Content-Type': "application/json"
+            },
+            data: {
+                "id": todo.id,
+                "title": todo.todo,
+                "completed": todo.done
+            }
+        };
+        $http(req).then(function(response) {
+            console.log(response);
+            todoCtrl.fetchTodos();
+        }, function(error) {
+            console.log(error);
+        });
+    };
+
+    todoCtrl.deleteTodo = function(ID) {
+        console.log(ID);
+        var req = {
+            method: 'DELETE',
+            url: `${baseUrl}/todo/todo/`,
+            params: { 
+                "ID": ID
+            } 
+        };
+        $http(req).then(function(response) {
+            console.log(response.data);
+            todoCtrl.fetchTodos();  
+        }, function(error) {
+            console.log("error", error);
+        });
     };
 }]);
-
-// app.controller('TodoController', ['$http', '$state', function($http, $state) {
-//     var todoCtrl = this;
-//     todoCtrl.todos = [];
-//     todoCtrl.newTodo = '';
-//     todoCtrl.username = sessionStorage.getItem('username') || 'User';
-
-//     todoCtrl.fetchTodos = function() {
-//         $http.get('http://10.21.97.17:8000/todo/todo/')
-//             .then(function(response) {
-//                 todoCtrl.todos = response.data;
-//             }, function(error) {
-//                 console.log("Error fetching todos:", error);
-//             });
-//     };
-//     todoCtrl.fetchTodos();
-
-//     todoCtrl.addTodo = function() {
-//         if (todoCtrl.newTodo) {
-//             $http.post('http://10.21.97.17:8000/todo/todo/', { text: todoCtrl.newTodo })
-//                 .then(function(response) {
-//                     todoCtrl.todos.push(response.data);
-//                     todoCtrl.newTodo = '';
-//                 }, function(error) {
-//                     console.log("Error adding todo:", error);
-//                 });
-//         }
-//     };
-
-    // todoCtrl.updateTodo = function(index) {
-    //     var updatedText = prompt("Update todo:", todoCtrl.todos[index].text);
-    //     if (updatedText !== null) {
-    //         $http.put('http://10.21.97.17:8000/todo/todo/' + todoCtrl.todos[index].id, { text: updatedText })
-    //             .then(function(response) {
-    //                 todoCtrl.todos[index].text = updatedText;
-    //             }, function(error) {
-    //                 console.log("Error updating todo:", error);
-    //             });
-    //     }
-    // };
-
-    // todoCtrl.deleteTodo = function(index) {
-    //     if (confirm("Are you sure you want to delete this todo?")) {
-    //         $http.delete('http://10.21.97.17:8000/todo/todo/' + todoCtrl.todos[index].id)
-    //             .then(function(response) {
-    //                 todoCtrl.todos.splice(index, 1);
-    //             }, function(error) {
-    //                 console.log("Error deleting todo:", error);
-    //             });
-    //     }
-    // };
-// }]);
