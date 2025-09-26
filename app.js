@@ -1,196 +1,230 @@
-const app = angular.module('myapp', ['ui.router']);
+const app = angular.module("myapp", ["ui.router"]);
+var baseUrl = "http://127.0.0.1:4000";
 
-app.config(['$urlRouterProvider', '$stateProvider', function($urlRouterProvider, $stateProvider) {
-    $urlRouterProvider.otherwise('/login');
-    
+app.config([
+  "$urlRouterProvider",
+  "$stateProvider",
+  function ($urlRouterProvider, $stateProvider) {
+    $urlRouterProvider.otherwise("/login");
+
     $stateProvider
-        .state('login', {
-            url: '/login',
-            templateUrl: 'login.html',
-            controller: 'LoginController',
-            controllerAs: 'loginCtrl'
-        })
-        .state('register', {
-            url: '/register',
-            templateUrl: 'register.html',
-            controller: 'RegController',
-            controllerAs: 'regCtrl'
-        })
-        .state('todo', {
-            url: '/todo',
-            templateUrl: 'todo.html',
-            controller: 'TodoController',
-            controllerAs: 'todoCtrl'
-        });
-}]);
+      .state("login", {
+        url: "/login",
+        templateUrl: "routes/login.html",
+        controller: "LoginController",
+        controllerAs: "loginCtrl",
+      })
+      .state("register", {
+        url: "/register",
+        templateUrl: "routes/register.html",
+        controller: "RegController",
+        controllerAs: "regCtrl",
+      })
+      .state("todo", {
+        url: "/todo",
+        templateUrl: "routes/todo.html",
+        controller: "TodoController",
+        controllerAs: "todoCtrl",
+      });
+  },
+]);
 
-app.controller('RegController', ['$http', '$state', function ($http, $state) {
+app.controller("RegController", [
+  "$http",
+  "$state",
+  function ($http, $state) {
     var regCtrl = this;
-    regCtrl.register = function() {
-        console.log(regCtrl.fname, regCtrl.lname, regCtrl.username, regCtrl.email, regCtrl.pass1, regCtrl.pass2);
-        if (regCtrl.pass1 !== regCtrl.pass2) {
-            regCtrl.errorMessage = "Passwords do not match";
-            return;
-        }
-        var req = {
-            method: 'POST',
-            url: 'http://10.21.97.17:8000/todo/register/',
-            headers: {
-                'Content-Type': "application/json"
-            },
-            data: {
-                "Fname": regCtrl.fname,
-                "Lname": regCtrl.lname,
-                "Uname": regCtrl.username,
-                "Email": regCtrl.email,
-                "Passwd1": regCtrl.pass1,
-                "Passwd2": regCtrl.pass2
-            }
-        };
-        $http(req).then(function(response) {
-            console.log(response);
-            regCtrl.successMessage = "Registration successful!";
-            $state.go('login');
-        }, function(error) {
-            regCtrl.errorMessage = "Registration failed. Please try again.";
-            console.log("error", error);
-        });
-    };
-}]);
 
-app.controller('LoginController', ['$http','$state', function ($http,$state) {
+    regCtrl.register = function () {
+      if (regCtrl.pass1 !== regCtrl.pass2) {
+        regCtrl.errorMessage = "Passwords do not match";
+        return;
+      }
+
+      var req = {
+        method: "POST",
+        url: `${baseUrl}/auth/register`,
+        withCredentials: true,
+        data: {
+          name: regCtrl.username,
+          email: regCtrl.email,
+          password: regCtrl.pass1,
+        },
+      };
+
+      $http(req).then(
+        function (response) {
+          console.log(response);
+          window.alert("Registration successful");
+          $state.go("login");
+        },
+        function (error) {
+          regCtrl.errorMessage =
+            error.data?.error || "An error occurred. Try again.";
+          console.log("error", error);
+        }
+      );
+    };
+  },
+]);
+
+app.controller("LoginController", [
+  "$http",
+  "$state",
+  function ($http, $state) {
     var loginCtrl = this;
-    loginCtrl.login = function() {
-        console.log(loginCtrl.username, loginCtrl.password);
-        if (loginCtrl.username && loginCtrl.password) {
-            var req = {
-                method: 'POST',
-                url: 'http://10.21.97.17:8000/todo/login/',
-                headers: {
-                    'Content-Type': "application/json"
-                },
-                data: {
-                    "Uname": loginCtrl.username,
-                    "Passwd": loginCtrl.password
-                }
-            };
-            $http(req).then(function(response) {
-                console.log(response);
-                window.alert("Login successful");
-                sessionStorage.setItem('username', loginCtrl.username);
-                $state.go('todo');
-            }, function(error) {
-                window.alert("Error");
-                console.log("error", error);
-            });
-        } else {
-            loginCtrl.errorMessage = "Enter username and password";
-        }
-    };
-}]);
 
-app.controller('TodoController', ['$http', '$state', function($http, $state) {
+    loginCtrl.login = function () {
+      if (loginCtrl.username && loginCtrl.password) {
+        var req = {
+          method: "POST",
+          url: `${baseUrl}/auth/login`,
+          withCredentials: true,
+          data: {
+            email: loginCtrl.username,
+            password: loginCtrl.password,
+          },
+        };
+
+        $http(req).then(
+          function (response) {
+            console.log(response);
+            alert("Login successful");
+            $state.go("todo");
+          },
+          function (error) {
+            loginCtrl.errorMessage =
+              error.data?.error || "Invalid login. Try again.";
+            console.log("Error", error);
+          }
+        );
+      } else {
+        loginCtrl.errorMessage = "Enter username and password";
+      }
+    };
+  },
+]);
+
+app.controller("TodoController", [
+  "$http",
+  "$state",
+  function ($http, $state) {
     var todoCtrl = this;
     todoCtrl.todos = [];
-    todoCtrl.newTodo = '';
-    todoCtrl.username = sessionStorage.getItem('username');
-    var baseUrl = 'http://10.21.97.17:8000';
+    todoCtrl.newTodo = "";
 
-    todoCtrl.logout = function() {
+    todoCtrl.logout = function () {
+      if (confirm("Are you sure you want to logout?")) {
         var req = {
-            method: 'POST',
-            url: `${baseUrl}/todo/todo/`,
-            headers: {
-                'Content-Type': "application/json"
-            },
-            data: {
-                "Todo": "logout",
-                "Status": "logout"
-            }
+          method: "POST",
+          url: `${baseUrl}/auth/logout`,
+          withCredentials: true,
         };
-        if (confirm("Are you sure you want to logout?")) {
-        $http(req).then(function(response) {
+        $http(req).then(
+          function (response) {
             console.log(response);
-            sessionStorage.removeItem('username');
-            $state.go('login');
-        }, function(error) {
+            $state.go("login");
+          },
+          function (error) {
             console.log("error", error);
-        });
-    }};
-
-    todoCtrl.fetchTodos = function() {
-        var req = {
-            method: 'GET',
-            url: `${baseUrl}/todo/todo/`,
-            params: { 
-                "username": todoCtrl.username
-            }       
-        };
-        $http(req).then(function(response) {
-            console.log(response);
-            todoCtrl.todos = response.data.todos;
-            console.log(response.data.todos);
-        }, function(error) {
-            console.log("Error", error);
-        });
+          }
+        );
+      }
     };
+
+    todoCtrl.fetchTodos = function () {
+      var req = {
+        method: "GET",
+        url: `${baseUrl}/todos`,
+        withCredentials: true,
+      };
+      $http(req).then(
+        function (response) {
+          console.log(response);
+          todoCtrl.todos = response.data.todos;
+        },
+        function (error) {
+          console.log("Error", error);
+          if (error.status === 401) {
+            $state.go("login");
+          }
+        }
+      );
+    };
+
+    todoCtrl.addTodo = function () {
+      if (!todoCtrl.newTodo) return;
+
+      var req = {
+        method: "POST",
+        url: `${baseUrl}/todos`,
+        withCredentials: true,
+        data: {
+          task: todoCtrl.newTodo,
+        },
+      };
+      $http(req).then(
+        function (response) {
+          console.log(response);
+          todoCtrl.fetchTodos();
+          todoCtrl.newTodo = "";
+        },
+        function (error) {
+          console.log(error);
+        }
+      );
+    };
+
+    todoCtrl.deleteTodo = function (ID) {
+      var req = {
+        method: "DELETE",
+        url: `${baseUrl}/todos/${ID}`,
+        withCredentials: true,
+      };
+      $http(req).then(
+        function (response) {
+          console.log(response.data);
+          todoCtrl.fetchTodos();
+        },
+        function (error) {
+          console.log("error", error);
+        }
+      );
+    };
+
+    todoCtrl.editTodo = function (todo) {
+      todo.originalTask = todo.task;
+      todo.editing = true;
+    };
+
+    todoCtrl.saveEdit = function (todo) {
+      var req = {
+        method: "PUT",
+        url: `${baseUrl}/todos/${todo._id}`,
+        withCredentials: true,
+        data: {
+          task: todo.task,
+          completed: todo.completed || false,
+        },
+      };
+
+      $http(req).then(
+        function (response) {
+          console.log(response);
+          todo.editing = false;
+          todoCtrl.fetchTodos();
+        },
+        function (error) {
+          console.log(error);
+        }
+      );
+    };
+
+    todoCtrl.cancelEdit = function (todo) {
+      todo.task = todo.originalTask;
+      todo.editing = false;
+    };
+
     todoCtrl.fetchTodos();
-
-    todoCtrl.addTodo = function() {
-        var req = {
-            method: 'POST',
-            url: `${baseUrl}/todo/todo/`,
-            headers: {
-                'Content-Type': "application/json"
-            },
-            data: {
-                "Todo": todoCtrl.newTodo
-            }
-        };
-        $http(req).then(function(response) {
-            console.log(response);
-            todoCtrl.fetchTodos();
-            todoCtrl.newTodo = '';
-        }, function(error) {
-            console.log(error);
-        });
-    };
-
-    todoCtrl.updateTodo = function(todo) {
-        var req = {
-            method: 'PUT',
-            url: `${baseUrl}/todo/todo/`,
-            headers: {
-                'Content-Type': "application/json"
-            },
-            data: {
-                "id": todo.id,
-                "title": todo.todo,
-                "completed": todo.done
-            }
-        };
-        $http(req).then(function(response) {
-            console.log(response);
-            todoCtrl.fetchTodos();
-        }, function(error) {
-            console.log(error);
-        });
-    };
-
-    todoCtrl.deleteTodo = function(ID) {
-        console.log(ID);
-        var req = {
-            method: 'DELETE',
-            url: `${baseUrl}/todo/todo/`,
-            params: { 
-                "ID": ID
-            } 
-        };
-        $http(req).then(function(response) {
-            console.log(response.data);
-            todoCtrl.fetchTodos();  
-        }, function(error) {
-            console.log("error", error);
-        });
-    };
-}]);
+  },
+]);
